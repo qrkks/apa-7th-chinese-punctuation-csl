@@ -1,10 +1,11 @@
--- Run citeproc, then normalize narrative citations for Chinese prose.
+-- Adapt APA in-text citations for Chinese prose in one ordered pipeline.
 --
--- The Space immediately before the full-width year parenthesis is removed from
--- every AuthorInText citation. Only standalone ampersands joining two personal
--- authors are changed to 和; existing Space nodes around 和 are preserved.
--- Corporate author names, parenthetical citations, and bibliography entries
--- are otherwise untouched.
+-- Before citeproc, source-authored spaces adjacent to citation markers are
+-- normalized. After citeproc, the Space before the full-width year parenthesis
+-- is removed from every AuthorInText citation. Standalone ampersands joining
+-- two personal authors are changed to 和, while existing spaces around 和 are
+-- preserved. Corporate author names, parenthetical citations, bibliography
+-- entries, ordinary parentheses, and equations are otherwise untouched.
 
 local function personal_two_author_references(doc)
   local result = {}
@@ -23,6 +24,43 @@ local function personal_two_author_references(doc)
       if personal_names then
         result[pandoc.utils.stringify(reference.id)] = true
       end
+    end
+  end
+
+  return result
+end
+
+local function citation_kind(inline)
+  if inline.t ~= "Cite" or #inline.citations == 0 then
+    return nil
+  end
+
+  for _, citation in ipairs(inline.citations) do
+    if tostring(citation.mode) == "AuthorInText" then
+      return "narrative"
+    end
+  end
+
+  return "parenthetical"
+end
+
+local function remove_source_spacing(inlines)
+  local result = pandoc.List()
+  local remove_next_space = false
+
+  for _, inline in ipairs(inlines) do
+    local kind = citation_kind(inline)
+    if inline.t == "Space" and remove_next_space then
+      remove_next_space = false
+    elseif kind ~= nil then
+      if kind == "parenthetical" and #result > 0 and result[#result].t == "Space" then
+        result:remove(#result)
+      end
+      result:insert(inline)
+      remove_next_space = true
+    else
+      remove_next_space = false
+      result:insert(inline)
     end
   end
 
@@ -53,8 +91,6 @@ local function normalize_narrative(inline, localize_connector)
     end
   end
 
-  -- No full-width year parenthesis means citeproc has not run yet, or this is
-  -- not output from the companion CSL style. Leave it unchanged in either case.
   if year_start == nil then
     return inline
   end
@@ -77,6 +113,7 @@ end
 
 function Pandoc(doc)
   local localizable_ids = personal_two_author_references(doc)
+  doc = doc:walk { Inlines = remove_source_spacing }
   doc = pandoc.utils.citeproc(doc)
 
   return doc:walk {

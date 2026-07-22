@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 - 2026-07-22
+
+- Replace the two order-dependent Lua filters with one `zh-citation.lua`
+  pipeline that handles source spacing, citeproc, narrative year-parenthesis
+  spacing, and two-author connector localization internally.
+- Broaden the project documentation title to Chinese in-text citation
+  adaptation while keeping the Zotero CSL name scoped to full-width
+  parentheses.
+
 ## 0.1.2 - 2026-07-22
 
 - Remove the space before the full-width year parenthesis in every narrative

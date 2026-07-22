@@ -18,8 +18,7 @@ $fixturesPath = Join-Path $PSScriptRoot 'fixtures'
 $fixturePath = Join-Path $fixturesPath 'citations.md'
 $bibliographyPath = Join-Path $fixturesPath 'references.bib'
 $expectedCitationsPath = Join-Path $fixturesPath 'expected-citations.txt'
-$spacingFilterPath = Join-Path (Join-Path $projectRoot 'filters') 'zh-citation-spacing.lua'
-$narrativeFilterPath = Join-Path (Join-Path $projectRoot 'filters') 'zh-narrative-and.lua'
+$filterPath = Join-Path (Join-Path $projectRoot 'filters') 'zh-citation.lua'
 
 if (-not (Test-Path -LiteralPath $stylePath)) {
   throw "Generated style is missing: $stylePath"
@@ -94,9 +93,8 @@ if (-not $SkipRemoteCheck) {
   }
 }
 
-$rendered = & $Pandoc $fixturePath "--lua-filter=$spacingFilterPath" `
-  "--bibliography=$bibliographyPath" "--csl=$stylePath" `
-  "--lua-filter=$narrativeFilterPath" -t plain
+$rendered = & $Pandoc $fixturePath "--lua-filter=$filterPath" `
+  "--bibliography=$bibliographyPath" "--csl=$stylePath" -t plain
 if ($LASTEXITCODE -ne 0) {
   throw "Pandoc smoke test failed with exit code $LASTEXITCODE."
 }

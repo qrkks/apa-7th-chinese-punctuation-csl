@@ -1,12 +1,12 @@
-# APA 7th edition with Chinese full-width citation parentheses
+# APA 7 Adaptation for Chinese In-text Citations
 
 [简体中文](README.md) | English
 
-This unofficial CSL variant preserves APA 7th edition author-date rules and
-bibliography formatting while changing the parentheses generated for in-text
-citations to Chinese full-width parentheses. Companion Lua filters handle
-source-authored spaces at Chinese citation boundaries and localize the author
-connector in narrative citations.
+This unofficial adaptation targets APA 7th edition in-text citations in Chinese
+prose. Its CSL variant preserves APA author-date rules and bibliography
+formatting while changing in-text citation parentheses to Chinese full-width
+forms. A companion Lua filter handles citation-boundary spacing, narrative year
+parentheses, and author connectors in one pipeline.
 
 ```text
 Parenthetical: （Hu & Bentler, 1999）
@@ -29,16 +29,15 @@ is not affiliated with or endorsed by the American Psychological Association.
 the file with Zotero and confirm installation. The style appears as
 **APA 7th edition (Chinese full-width parentheses)**.
 
-The two Lua filters are for Pandoc/Quarto only. They are not installed with the
-Zotero CSL style and do not run in Zotero. For narrative citations in Zotero,
-write the author phrase with `和` in the prose and insert a year citation with
-the author suppressed.
+Installing the CSL alone in Zotero provides only Chinese full-width citation
+parentheses. The Lua filter is for Pandoc/Quarto and is not installed or run by
+Zotero. For narrative citations in Zotero, write the author phrase with `和` in
+the prose and insert a year citation with the author suppressed.
 
 ### Quarto / Pandoc
 
-Use the [CSL style](./apa-7th-chinese-punctuation.csl), the
-[Chinese citation-spacing filter](./filters/zh-citation-spacing.lua), and the
-[narrative-connector filter](./filters/zh-narrative-and.lua). Download them
+Use the [CSL style](./apa-7th-chinese-punctuation.csl) and the
+[Chinese in-text citation filter](./filters/zh-citation.lua). Download them
 separately or clone the repository:
 
 ```powershell
@@ -73,8 +72,7 @@ example, when the two projects are sibling directories:
 csl: ../apa-7th-chinese-punctuation-csl/apa-7th-chinese-punctuation.csl
 citeproc: false
 filters:
-  - ../apa-7th-chinese-punctuation-csl/filters/zh-citation-spacing.lua
-  - ../apa-7th-chinese-punctuation-csl/filters/zh-narrative-and.lua
+  - ../apa-7th-chinese-punctuation-csl/filters/zh-citation.lua
 ```
 
 Keep the Markdown source format-neutral, including normal spaces around
@@ -87,30 +85,28 @@ citation markers:
 ```
 
 Pandoc represents source spaces separately from the `Cite` node, so CSL cannot
-control them. The first Lua filter removes adjacent `Space` nodes on both sides
-of parenthetical citations. For narrative citations, it preserves the preceding
-source space and removes the following source space. The second filter removes
-the internal `Space` between the narrative author and the full-width year
-parenthesis. Ordinary parentheses, equations, and the bibliography are unchanged.
+control them. The unified filter first removes adjacent `Space` nodes on both
+sides of parenthetical citations. For narrative citations, it preserves the
+preceding source space and removes the following source space. It then runs
+citeproc, removes the internal `Space` before every narrative year parenthesis,
+and changes standalone `&` only when joining two personal authors. Existing
+spaces around `和` are preserved. Corporate author names, parenthetical
+citations, ordinary parentheses, equations, and the bibliography are otherwise
+unchanged.
 
-The narrative connector must be processed after citeproc. To make that order
-explicit, `citeproc: false` disables Quarto's later default citeproc pass; the
-second filter invokes Pandoc citeproc itself and then normalizes narrative
-citations. The two filters must remain in this order. It removes the space before
-the year parenthesis from every narrative citation, but changes standalone `&`
-characters only when they join two personal authors and preserves the existing
-spaces around `和`. Corporate author names, parenthetical citations, and the
-bibliography are otherwise unchanged.
+`citeproc: false` disables Quarto's later default citeproc pass. The unified
+filter invokes Pandoc citeproc at the correct stage, so users do not need to
+manage the ordering of multiple filters.
 
 When invoking Pandoc directly, preserve the same processing order:
 
 ```powershell
-pandoc input.qmd --lua-filter=filters/zh-citation-spacing.lua `
+pandoc input.qmd --lua-filter=filters/zh-citation.lua `
   --bibliography=references.bib --csl=apa-7th-chinese-punctuation.csl `
-  --lua-filter=filters/zh-narrative-and.lua -o output.docx
+  -o output.docx
 ```
 
-For an English output profile, use the standard APA CSL and omit both filters;
+For an English output profile, use the standard APA CSL and omit the filter;
 the QMD source does not need to change. An absolute path also works locally,
 but sibling repositories and relative paths are easier to move.
 
