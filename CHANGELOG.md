@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 - 2026-07-22
+
+- Localize the narrative citation author connector from `&` to `和` with a
+  post-citeproc Lua filter.
+- Preserve existing spaces around `和`; spacing policy remains user-controlled.
+- Keep `&` unchanged in corporate author names, parenthetical citations, and
+  bibliography entries.
+
 ## 0.1.0 - 2026-07-22
 
 - Preserve the APA 7 bibliography implementation from the official CSL style.

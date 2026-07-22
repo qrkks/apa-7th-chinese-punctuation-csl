@@ -4,16 +4,18 @@
 
 这是一个非官方 CSL 变体：保留 APA 第 7 版的著者—日期规则和参考文献格式，
 仅将文内引用生成的圆括号改为中文全角括号。配套 Lua 过滤器处理中文引用边界
-处的源空格。
+处的源空格，并将叙述式引用的作者连接符本地化为“和”。
 
 ```text
 夹注引用：（Hu & Bentler, 1999）
 多篇引用：（Dunn et al., 2014; Hu & Bentler, 1999）
-叙述式引用：Hu & Bentler （1999）
+叙述式引用：Hu 和 Bentler （1999）
 ```
 
-叙述式引用中的著者与年份括号之间保留 APA 生成的一个空格。过滤器保留
-叙述式引用前的源空格和引用内部间隔，只删除引用后、继续中文正文前的源空格。
+叙述式引用中的 `&` 改为“和”，但不增删“和”两侧的空格；是否采用盘古空格由
+用户自己的排版工具决定。著者与年份括号之间保留 APA 生成的一个空格。空格
+过滤器保留叙述式引用前的源空格和引用内部间隔，只删除引用后、继续中文正文前
+的源空格。
 本项目与美国心理学会（American Psychological Association）不存在隶属或
 官方认可关系。
 
@@ -25,13 +27,15 @@
 文件并确认安装。样式名称显示为
 **APA 7th edition (Chinese full-width parentheses)**。
 
-Lua 过滤器只用于 Pandoc/Quarto，不会随 Zotero CSL 样式一起安装，也不会在
-Zotero 中运行。
+两个 Lua 过滤器只用于 Pandoc/Quarto，不会随 Zotero CSL 样式一起安装，也不会
+在 Zotero 中运行。在 Zotero 中制作叙述式引用时，可在正文中输入带“和”的作者
+短语，再插入省略作者的年份引用。
 
 ### 在 Quarto / Pandoc 中使用
 
-需要同时使用 [CSL 样式](./apa-7th-chinese-punctuation.csl)和
-[中文引用空格过滤器](./filters/zh-citation-spacing.lua)。可以分别下载，也可以
+需要同时使用 [CSL 样式](./apa-7th-chinese-punctuation.csl)、
+[中文引用空格过滤器](./filters/zh-citation-spacing.lua)和
+[叙述式引用连接符过滤器](./filters/zh-narrative-and.lua)。可以分别下载，也可以
 克隆整个仓库：
 
 ```powershell
@@ -43,11 +47,12 @@ git clone https://github.com/qrkks/apa-7th-chinese-punctuation-csl.git
 
 ## 修改内容
 
-本项目只本地化文内引用生成的圆括号：
+本项目本地化文内引用的括号及叙述式连接符：
 
 - 圆括号由 `()` 改为 `（）`；
 - 著者、年份和定位信息之间仍使用 APA 英文逗号 `, `；
 - 同一引用簇中的多篇文献仍使用 APA 英文分号 `; `；
+- 叙述式引用中的作者连接符由 `&` 改为“和”，夹注引用仍使用 `&`；
 - 参考文献表与官方 APA CSL 保持完全一致。
 
 括号将引用内容与中文正文隔开，而括号内部仍是 APA 英文著者—年份表达，因此
@@ -60,8 +65,10 @@ git clone https://github.com/qrkks/apa-7th-chinese-punctuation-csl.git
 
 ```yaml
 csl: ../apa-7th-chinese-punctuation-csl/apa-7th-chinese-punctuation.csl
+citeproc: false
 filters:
   - ../apa-7th-chinese-punctuation-csl/filters/zh-citation-spacing.lua
+  - ../apa-7th-chinese-punctuation-csl/filters/zh-narrative-and.lua
 ```
 
 Markdown 原文保持格式无关的通用写法，包括引用标记前后的正常空格：
@@ -77,7 +84,21 @@ Pandoc 会将源空格表示为独立于 `Cite` 的节点，CSL 本身无法控�
 空格，并保留引用前和著者—年份内部的间隔。普通括号、公式和参考文献表不受
 影响。
 
-输出英文文档时，改用标准 APA CSL 并停用该过滤器即可，无需修改 QMD 原文。
+叙述式连接符必须在 citeproc 生成引用之后处理。为固定处理顺序，配置先用
+`citeproc: false` 关闭 Quarto 稍后执行的默认 citeproc，再由第二个过滤器调用
+Pandoc citeproc 并本地化连接符；两个过滤器的顺序不能颠倒。连接符过滤器只把
+叙述式引用中连接两位个人作者的独立 `&` 改为“和”，保留其左右已有的空格；
+机构作者名称、夹注引用和参考文献表不受影响。
+
+直接调用 Pandoc 时同样需要保持处理顺序：
+
+```powershell
+pandoc input.qmd --lua-filter=filters/zh-citation-spacing.lua `
+  --bibliography=references.bib --csl=apa-7th-chinese-punctuation.csl `
+  --lua-filter=filters/zh-narrative-and.lua -o output.docx
+```
+
+输出英文文档时，改用标准 APA CSL 并停用这两个过滤器即可，无需修改 QMD 原文。
 绝对路径也可以使用，但将文档项目和本仓库放在同级目录并采用相对路径更便于
 迁移。
 
