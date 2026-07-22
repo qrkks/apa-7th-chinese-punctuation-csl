@@ -1,0 +1,13 @@
+Creative Commons Attribution-ShareAlike 3.0 Unported
+SPDX-License-Identifier: CC-BY-SA-3.0
+
+The official legal code is available at:
+
+https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+You are free to share and adapt the licensed material, provided that you give
+appropriate credit, indicate whether changes were made, distribute adaptations
+under the same license, and otherwise comply with the official legal code.
+
+This notice is a convenient summary and does not replace the official legal
+code. The original CSL rights metadata is retained in the licensed files.

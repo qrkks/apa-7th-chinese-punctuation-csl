@@ -1,12 +1,27 @@
-APA 7th edition (Chinese full-width parentheses) CSL
+# Licensing
 
-The generated CSL style is derived from the APA CSL style maintained by the
-Citation Style Language project. It is licensed under the Creative Commons
+This repository contains material under two licenses.
+
+## CSL files and upstream-derived content
+
+The following files are derived from the official APA CSL maintained by the
+Citation Style Language project and are licensed under the Creative Commons
 Attribution-ShareAlike 3.0 Unported License (CC BY-SA 3.0):
 
-https://creativecommons.org/licenses/by-sa/3.0/
+- `vendor/apa.csl`
+- `apa-7th-chinese-punctuation.csl`
 
-The original authors and contributors are retained in the generated CSL
-metadata. The Citation Style Language project is available at:
+See `LICENSES/CC-BY-SA-3.0.txt`. Original authors, contributors, and licensing
+metadata are retained in both CSL files.
 
-https://citationstyles.org/
+## Original project code and documentation
+
+The following original material is licensed under the MIT License:
+
+- `filters/`
+- `scripts/`
+- `tests/`
+- `.github/`
+- `README.md`, `README.en.md`, and `CHANGELOG.md`
+
+See `LICENSES/MIT.txt`.

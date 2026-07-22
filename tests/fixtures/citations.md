@@ -1,10 +1,14 @@
-Single citation [@hu1999].
+单篇引用 [@hu1999]。
 
-Multiple citations [@hu1999; @dunn2014].
+多篇引用 [@hu1999; @dunn2014]。
 
-Narrative citation @hu1999.
+叙述式引用 @hu1999 指出拟合指标需要综合判断。
 
-Citation with following text [@hu1999] continues.
+引用后还有正文 [@hu1999] 继续讨论。
+
+模型 2 [@hu1999] 显示结果稳定。
+
+CFA [@hu1999] 结果支持该模型。
 
 # References
 
