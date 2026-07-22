@@ -8,4 +8,5 @@
 - Add an optional Pandoc Lua filter that removes only spaces adjacent to
   parenthetical citations, allowing format-neutral Markdown source.
 - Vendor the pinned official APA CSL and support reproducible offline builds.
+- Make Chinese the primary project documentation and add an English README.
 - Add reproducible upstream generation and Pandoc smoke tests.
