@@ -1,7 +1,9 @@
 单篇引用（Hu & Bentler, 1999）。
 多篇引用（Dunn et al., 2014; Hu & Bentler, 1999）。
-叙述式引用 Hu 和 Bentler （1999）指出拟合指标需要综合判断。
-机构作者 Research & Development Group （2020）发布了年度报告。
+叙述式引用 Hu 和 Bentler（1999）指出拟合指标需要综合判断。
+单作者 Single（2018）提出了这一观点。
+三位作者 Dunn et al.（2014）讨论了信度估计。
+机构作者 Research & Development Group（2020）发布了年度报告。
 引用后还有正文（Hu & Bentler, 1999）继续讨论。
 模型 2（Hu & Bentler, 1999）显示结果稳定。
 CFA（Hu & Bentler, 1999）结果支持该模型。

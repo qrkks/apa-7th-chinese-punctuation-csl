@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 - 2026-07-22
+
+- Remove the space before the full-width year parenthesis in every narrative
+  citation, including single-author, two-author, `et al.`, and corporate-author
+  forms.
+- Continue to preserve existing spaces around `和` and localize `&` only for
+  two personal authors.
+
 ## 0.1.1 - 2026-07-22
 
 - Localize the narrative citation author connector from `&` to `和` with a

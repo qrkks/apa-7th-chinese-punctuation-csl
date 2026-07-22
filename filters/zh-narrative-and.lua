@@ -1,9 +1,10 @@
--- Run citeproc, then localize the author connector in narrative citations.
+-- Run citeproc, then normalize narrative citations for Chinese prose.
 --
--- Only standalone ampersands joining two personal authors in AuthorInText
--- citations are changed. Existing Space nodes around the connector are
--- preserved; corporate authors, parenthetical citations, and bibliography
--- entries are untouched.
+-- The Space immediately before the full-width year parenthesis is removed from
+-- every AuthorInText citation. Only standalone ampersands joining two personal
+-- authors are changed to 和; existing Space nodes around 和 are preserved.
+-- Corporate author names, parenthetical citations, and bibliography entries
+-- are otherwise untouched.
 
 local function personal_two_author_references(doc)
   local result = {}
@@ -28,21 +29,21 @@ local function personal_two_author_references(doc)
   return result
 end
 
-local function is_localizable_narrative(inline, localizable_ids)
+local function narrative_citation_id(inline)
   if inline.t ~= "Cite" or #inline.citations == 0 then
-    return false
+    return nil
   end
 
   for _, citation in ipairs(inline.citations) do
-    if tostring(citation.mode) == "AuthorInText" and localizable_ids[citation.id] then
-      return true
+    if tostring(citation.mode) == "AuthorInText" then
+      return citation.id
     end
   end
 
-  return false
+  return nil
 end
 
-local function localize_author_connector(inline)
+local function normalize_narrative(inline, localize_connector)
   local year_start = nil
 
   for index, item in ipairs(inline.content) do
@@ -58,11 +59,17 @@ local function localize_author_connector(inline)
     return inline
   end
 
-  for index = 1, year_start - 1 do
-    local item = inline.content[index]
-    if item.t == "Str" and item.text == "&" then
-      item.text = "和"
+  if localize_connector then
+    for index = 1, year_start - 1 do
+      local item = inline.content[index]
+      if item.t == "Str" and item.text == "&" then
+        item.text = "和"
+      end
     end
+  end
+
+  if year_start > 1 and inline.content[year_start - 1].t == "Space" then
+    inline.content:remove(year_start - 1)
   end
 
   return inline
@@ -74,8 +81,9 @@ function Pandoc(doc)
 
   return doc:walk {
     Cite = function(inline)
-      if is_localizable_narrative(inline, localizable_ids) then
-        return localize_author_connector(inline)
+      local citation_id = narrative_citation_id(inline)
+      if citation_id ~= nil then
+        return normalize_narrative(inline, localizable_ids[citation_id] == true)
       end
 
       return inline

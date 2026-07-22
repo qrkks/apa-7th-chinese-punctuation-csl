@@ -11,16 +11,15 @@ connector in narrative citations.
 ```text
 Parenthetical: （Hu & Bentler, 1999）
 Multiple cites: （Dunn et al., 2014; Hu & Bentler, 1999）
-Narrative: Hu 和 Bentler （1999）
+Narrative: Hu 和 Bentler（1999）
 ```
 
 In narrative citations, `&` becomes `和`, but the filter neither adds nor
 removes spaces around `和`; users may apply their preferred CJK/Latin spacing
-rules separately. The narrative form retains the APA-generated space between
-the author and year parentheses. The spacing filter preserves the source space
-before a narrative citation and its internal spacing, while removing the source
-space after it before continuing Chinese text. This project is not affiliated
-with or endorsed by the American Psychological Association.
+rules separately. No space is retained before the full-width year parenthesis.
+The spacing filter preserves the source space before a narrative citation while
+removing the source space after it before continuing Chinese text. This project
+is not affiliated with or endorsed by the American Psychological Association.
 
 ## Install
 
@@ -88,18 +87,20 @@ citation markers:
 ```
 
 Pandoc represents source spaces separately from the `Cite` node, so CSL cannot
-control them. The Lua filter removes adjacent `Space` nodes on both sides of
-parenthetical citations. For narrative citations, it removes only the following
-source space and preserves the preceding and internal author-year spacing.
-Ordinary parentheses, equations, and the bibliography are unchanged.
+control them. The first Lua filter removes adjacent `Space` nodes on both sides
+of parenthetical citations. For narrative citations, it preserves the preceding
+source space and removes the following source space. The second filter removes
+the internal `Space` between the narrative author and the full-width year
+parenthesis. Ordinary parentheses, equations, and the bibliography are unchanged.
 
 The narrative connector must be processed after citeproc. To make that order
 explicit, `citeproc: false` disables Quarto's later default citeproc pass; the
-second filter invokes Pandoc citeproc itself and then localizes the connector.
-The two filters must remain in this order. The connector filter changes only
-standalone `&` characters joining two personal authors in narrative citations
-and preserves existing spaces on both sides. Corporate author names,
-parenthetical citations, and the bibliography are unchanged.
+second filter invokes Pandoc citeproc itself and then normalizes narrative
+citations. The two filters must remain in this order. It removes the space before
+the year parenthesis from every narrative citation, but changes standalone `&`
+characters only when they join two personal authors and preserves the existing
+spaces around `和`. Corporate author names, parenthetical citations, and the
+bibliography are otherwise unchanged.
 
 When invoking Pandoc directly, preserve the same processing order:
 
