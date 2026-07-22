@@ -1,0 +1,6 @@
+* text=auto
+*.csl text eol=lf
+*.lua text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.yml text eol=lf

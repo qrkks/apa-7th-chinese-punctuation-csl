@@ -1,0 +1,21 @@
+name: Test CSL
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Build style from vendored APA
+        shell: pwsh
+        run: ./scripts/build-style.ps1
+      - name: Run tests
+        shell: pwsh
+        run: ./tests/test-style.ps1
+      - name: Check generated file is current
+        run: git diff --exit-code -- apa-7th-chinese-punctuation.csl vendor/apa.csl
