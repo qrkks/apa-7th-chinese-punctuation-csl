@@ -1,44 +1,42 @@
-# APA 7th edition with Chinese full-width citation parentheses
+# APA 7 中文全角引用括号
 
-An unofficial CSL variant that keeps the APA 7th edition bibliography and
-author rules while using full-width outer parentheses for in-text citations in
-Simplified Chinese prose.
+简体中文 | [English](README.en.md)
+
+这是一个非官方 CSL 样式：保留 APA 第 7 版的参考文献表和著者规则，仅将
+中文正文中夹注引用的外层括号改为全角括号。
 
 ```text
 （Hu & Bentler, 1999）
 （Dunn et al., 2014; Hu & Bentler, 1999）
 ```
 
-This project is not affiliated with or endorsed by the American Psychological
-Association.
+本项目与美国心理学会（American Psychological Association）不存在隶属或
+官方认可关系。
 
-## Install
+## 安装
 
-Download `apa-7th-chinese-punctuation.csl`, or clone the repository to keep the
-CSL and Pandoc filter together:
+可以直接下载 `apa-7th-chinese-punctuation.csl`，也可以克隆整个仓库，同时获得
+CSL 样式和 Pandoc 空格过滤器：
 
 ```powershell
 git clone https://github.com/qrkks/apa-7th-chinese-punctuation-csl.git
 ```
 
-## What changes
+## 修改内容
 
-Only the outer parentheses of in-text citations are localized:
+本项目仅本地化正文夹注引用的外层括号：
 
-- parentheses: `()` to `（）`
-- author/date/locator delimiter remains APA `, `
-- multiple-citation delimiter remains APA `; `
+- 外层括号由 `()` 改为 `（）`；
+- 著者、年份和定位信息之间仍使用 APA 英文逗号 `, `；
+- 同一引用簇中的多篇文献仍使用 APA 英文分号 `; `。
 
-The citation content is an English APA author-date expression isolated by the
-parentheses, so its internal punctuation remains English.
-
-The bibliography section is kept identical to the upstream APA CSL. Automated
-tests enforce this invariant.
+括号将引用内容与中文正文隔开，而括号内部仍是 APA 英文著者—年份表达，因此
+保留英文标点。参考文献表与官方 APA CSL 完全一致，并由自动化测试保证。
 
 ## Quarto
 
-Use the CSL together with the citation-spacing Lua filter, with paths adjusted
-to where this repository is stored relative to the QMD project:
+建议同时使用 CSL 和引用空格过滤器。请根据本仓库相对于 QMD 项目的实际位置
+调整路径；例如二者位于同级目录时：
 
 ```yaml
 csl: ../apa-7th-chinese-punctuation-csl/apa-7th-chinese-punctuation.csl
@@ -46,55 +44,47 @@ filters:
   - ../apa-7th-chinese-punctuation-csl/filters/zh-citation-spacing.lua
 ```
 
-Keep the Markdown source format-neutral, including its normal space before a
-citation marker:
+Markdown 原文保持格式无关的通用写法，包括引用标记前的正常空格：
 
 ```markdown
 中文正文 [@hu1999]。
 ```
 
-Pandoc represents that source space separately from the `Cite` node, so CSL
-cannot control it. The Lua filter removes only `Space` nodes immediately before
-or after parenthetical citations. Narrative citations, ordinary parentheses,
-equations, and the bibliography are unchanged.
+Pandoc 会将这个源空格表示为独立于 `Cite` 的节点，CSL 本身无法控制它。Lua
+过滤器只删除括号式引用紧邻的前后空格，不修改叙述式引用、普通括号、公式或
+参考文献表。
 
-For an English output profile, use the standard APA CSL and omit this filter;
-the QMD source does not need to change.
-
-An absolute path also works locally, but a relative path is easier to move when
-the document project and this repository are stored as sibling directories.
+输出英文文档时，改用标准 APA CSL 并停用该过滤器即可，无需修改 QMD 原文。
+绝对路径也可以使用，但将文档项目和本仓库放在同级目录并采用相对路径更便于
+迁移。
 
 ## Zotero
 
-Open `apa-7th-chinese-punctuation.csl` with Zotero and confirm installation.
-The style appears as **APA 7th edition (Chinese full-width parentheses)**.
+用 Zotero 打开 `apa-7th-chinese-punctuation.csl` 并确认安装。样式名称显示为
+**APA 7th edition (Chinese full-width parentheses)**。
 
-## Update from upstream APA
+## 从官方 APA 更新
 
-The pinned official APA source is committed as `vendor/apa.csl`. Normal builds
-are offline and reproducible:
+固定版本的官方 APA 源文件保存在 `vendor/apa.csl`。日常构建可离线、可复现：
 
 ```powershell
 ./scripts/build-style.ps1
 ./tests/test-style.ps1 -SkipRemoteCheck
 ```
 
-To explicitly refresh the vendored source from the pinned official CSL tag and
-then rebuild the derived style:
+如需显式刷新官方源文件并重新生成派生样式：
 
 ```powershell
 ./scripts/update-upstream.ps1
 ./tests/test-style.ps1
 ```
 
-The update script downloads the official APA CSL from the stable CSL 1.0.2 tag.
-The build script changes the style metadata and outer citation parentheses
-only, and stops if the expected upstream structure changes. The default test
-also confirms that the vendored snapshot matches that pinned upstream; use
-`-SkipRemoteCheck` when working offline.
+更新脚本从 CSL 官方仓库稳定的 `v1.0.2` 标签下载 APA CSL。构建脚本只修改
+样式元数据和正文引用的外层括号；如果上游预期结构发生变化，脚本会停止。
+默认测试还会联网确认 vendored 快照与固定的官方源文件一致；离线时可使用
+`-SkipRemoteCheck`。
 
-## License and attribution
+## 许可与署名
 
-The generated style is derived from the official APA CSL and remains licensed
-under CC BY-SA 3.0. Original authors and contributors remain in the CSL
-metadata; `qrkks` is listed as the maintainer of this variant.
+生成的样式派生自官方 APA CSL，继续采用 CC BY-SA 3.0 许可。原作者和贡献者
+保留在 CSL 元数据中，`qrkks` 列为本变体的维护者。
